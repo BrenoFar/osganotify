@@ -1,0 +1,19 @@
+{
+  "name": "osganotify",
+  "version": "1.0.0",
+  "description": "Sistema completo de monitoramento de entrada em canais de voz no Discord, com bot, API e painel web.",
+  "main": "index.js",
+"scripts": {
+  "start": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run bot\"",
+  "backend": "node server/index.js",
+  "frontend": "npm start --prefix client",
+  "bot": "node bot/index.js"
+}
+,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,8 +1,7 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const { enviarMensagemWhatsApp } = require("./whatsapp");
+const fetch = require("node-fetch"); // import fetch
 
-// Inicializa bot
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -14,20 +13,32 @@ client.once("ready", () => {
   console.log(`🤖 Bot conectado como ${client.user.tag}`);
 });
 
-// Evento: Alguém entrou em um canal de voz
-client.on("voiceStateUpdate", (oldState, newState) => {
+client.on("voiceStateUpdate", async (oldState, newState) => {
   const user = newState.member?.user;
 
-  // Se entrou em um canal de voz (e não apenas trocou de canal)
   if (!oldState.channelId && newState.channelId) {
-    // Valida servidor
     if (newState.guild.id !== process.env.DISCORDIDGROUP) return;
 
     const nomeUsuario = user?.username || "Usuário";
     const canal = newState.channel?.name || "Canal Desconhecido";
 
     console.log(`${nomeUsuario} entrou no canal ${canal}`);
-    enviarMensagemWhatsApp(`${nomeUsuario} entrou no canal de voz: ${canal}`);
+
+    // Enviar para backend via POST
+    try {
+      await fetch("http://localhost:3001/api/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nomeUsuario,
+          canal,
+          data: new Date().toISOString(),
+        }),
+      });
+      console.log("Log enviado para backend");
+    } catch (error) {
+      console.error("Erro ao enviar log para backend:", error);
+    }
   }
 });
 
