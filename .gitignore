@@ -1,0 +1,18 @@
+# Node.js
+node_modules/
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# SQLite
+*.sqlite
+
+# React build
+client/build/
+dist/
+
+# VS Code
+.vscode/
