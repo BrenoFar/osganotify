@@ -14,7 +14,7 @@ app.post('/api/logs', (req, res) => {
   if (!nomeUsuario || !canal || !data) return res.status(400).send('Dados incompletos');
 
   inserirLog(nomeUsuario, canal, data);
-  res.status(201).send('Log registrado');
+  res.status(201).send('Log registrado com sucesso!');
 });
 
 app.get('/logs', (req, res) => {
