@@ -17,14 +17,42 @@ db.run(`
 function inserirLog(nomeUsuario, canal, data) {
   db.run(
     `INSERT INTO voice_logs (nomeUsuario, canal, data) VALUES (?, ?, ?)`,
-    [nomeUsuario, canal, data]
+    [nomeUsuario, canal, data],
+    (err) => {
+      if (err) console.error(err);
+    }
   );
 }
 
-function buscarLogs(callback) {
-  db.all(`SELECT * FROM voice_logs ORDER BY id DESC LIMIT 100`, [], (err, rows) => {
-    if (err) return callback([]);
-    callback(rows);
+/**
+ * Busca logs com filtros opcionais.
+ * @param {Object} filtros - { usuario, dataInicial, dataFinal }
+ * @param {Function} callback - function(err, rows)
+ */
+function buscarLogs(filtros, callback) {
+  let query = `SELECT * FROM voice_logs WHERE 1=1`;
+  const params = [];
+
+  if (filtros.usuario) {
+    query += ` AND nomeUsuario LIKE ?`;
+    params.push(`%${filtros.usuario}%`);
+  }
+
+  if (filtros.dataInicial) {
+    query += ` AND date(data) >= date(?)`;
+    params.push(filtros.dataInicial);
+  }
+
+  if (filtros.dataFinal) {
+    query += ` AND date(data) <= date(?)`;
+    params.push(filtros.dataFinal);
+  }
+
+  query += ` ORDER BY id DESC LIMIT 100`;
+
+  db.all(query, params, (err, rows) => {
+    if (err) return callback(err);
+    callback(null, rows);
   });
 }
 
