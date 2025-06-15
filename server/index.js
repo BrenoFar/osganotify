@@ -24,6 +24,10 @@ app.get('/logs', (req, res) => {
     dataFinal: req.query.dataFinal,
   };
 
+app.post('/deletarlogdia', (req, res)=> {
+  
+})
+
   buscarLogs(filtros, (err, logs) => {
     if (err) return res.status(500).send([]);
     res.json(logs);

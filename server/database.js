@@ -1,7 +1,7 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 
-const db = new sqlite3.Database(path.join(__dirname, 'logs.sqlite'), (err) => {
+const db = new sqlite3.Database(path.join(__dirname, "logs.sqlite"), (err) => {
   if (err) console.error(err);
 });
 
@@ -22,6 +22,14 @@ function inserirLog(nomeUsuario, canal, data) {
       if (err) console.error(err);
     }
   );
+}
+
+function deletarLogPorDia(data) {
+  db.run(`DELETE FROM voice_logs, WHERE data < (?)`),
+    [data],
+    (err) => {
+      if (err) console.error(err);
+    };
 }
 
 /**

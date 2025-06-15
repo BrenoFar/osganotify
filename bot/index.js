@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
 const fetch = require("node-fetch"); // import fetch
+const { enviarMensagemWhatsApp } = require("./whatsapp");
 
 const client = new Client({
   intents: [
@@ -23,6 +24,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
     const canal = newState.channel?.name || "Canal Desconhecido";
 
     console.log(`${nomeUsuario} entrou no canal ${canal}`);
+    //enviarMensagemWhatsapp(`${nomeUsuario} entrou no canal de voz: ${canal}.`);
+    enviarMensagemWhatsApp(`${nomeUsuario} entrou no canal de voz: ${canal}.`);
 
     // Enviar para backend via POST
     try {
