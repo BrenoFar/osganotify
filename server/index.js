@@ -1,0 +1,27 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { inserirLog, buscarLogs } = require('./database');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(cors());
+app.use(express.json());
+
+
+app.post('/api/logs', (req, res) => {
+  const { nomeUsuario, canal, data } = req.body;
+  if (!nomeUsuario || !canal || !data) return res.status(400).send('Dados incompletos');
+
+  inserirLog(nomeUsuario, canal, data);
+  res.status(201).send('Log registrado');
+});
+
+app.get('/api/logs', (req, res) => {
+  buscarLogs((logs) => res.json(logs));
+});
+
+app.listen(PORT, () => {
+  console.log(` API rodando em http://localhost:${PORT}`);
+});
