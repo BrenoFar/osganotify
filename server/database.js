@@ -5,38 +5,41 @@ const db = new sqlite3.Database(path.join(__dirname, "logs.sqlite"), (err) => {
   if (err) console.error(err);
 });
 
+// 1) Cria a tabela (se ainda não existir) com a nova coluna tempoHoras
 db.run(`
   CREATE TABLE IF NOT EXISTS voice_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nomeUsuario TEXT,
-    canal TEXT,
-    data TEXT
+    canal       TEXT,
+    data        TEXT,
+    tempoHoras  TEXT  
   )
 `);
 
-function inserirLog(nomeUsuario, canal, data) {
+
+ 
+function inserirLog(nomeUsuario, canal, data, tempoHoras = null) {
   db.run(
-    `INSERT INTO voice_logs (nomeUsuario, canal, data) VALUES (?, ?, ?)`,
-    [nomeUsuario, canal, data],
+    `INSERT INTO voice_logs (nomeUsuario, canal, data, tempoHoras) VALUES (?, ?, ?, ?)`,
+    [nomeUsuario, canal, data, tempoHoras],
     (err) => {
       if (err) console.error(err);
     }
   );
 }
 
-function deletarLogPorDia(data) {
-  db.run(`DELETE FROM voice_logs, WHERE data < (?)`),
-    [data],
+
+function deletarLogPorDia(dataLimite) {
+  db.run(
+    `DELETE FROM voice_logs WHERE date(data) < date(?)`,
+    [dataLimite],
     (err) => {
       if (err) console.error(err);
-    };
+    }
+  );
 }
 
-/**
- * Busca logs com filtros opcionais.
- * @param {Object} filtros - { usuario, dataInicial, dataFinal }
- * @param {Function} callback - function(err, rows)
- */
+
 function buscarLogs(filtros, callback) {
   let query = `SELECT * FROM voice_logs WHERE 1=1`;
   const params = [];
@@ -64,4 +67,4 @@ function buscarLogs(filtros, callback) {
   });
 }
 
-module.exports = { inserirLog, buscarLogs };
+module.exports = { inserirLog, buscarLogs, deletarLogPorDia };

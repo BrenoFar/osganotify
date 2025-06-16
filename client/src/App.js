@@ -55,8 +55,12 @@ function App() {
       <ul>
         {logs.map((log) => (
           <li key={log.id} className="border-b py-2">
-            <strong>{log.nomeUsuario}</strong> entrou em <em>{log.canal}</em> em{" "}
-            {new Date(log.data).toLocaleString()}
+            <strong>{log.nomeUsuario}</strong>{" "}
+            {log.canal === "—tempo online—" ? (
+              <>ficou online por <strong>{log.tempoHoras}</strong> h</>
+            ) : (
+              <>entrou em <em>{log.canal}</em> em {new Date(log.data).toLocaleString()}</>
+            )}
           </li>
         ))}
       </ul>
