@@ -37,3 +37,4 @@ app.post('/deletarlogdia', (req, res)=> {
 app.listen(PORT, () => {
   console.log(`API rodando em http://localhost:${PORT}`);
 });
+
